@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block body %}
+{% include "navbar.html" %}
+<section class="hero is-primary is-bold is-large">
+    <div class="hero-body" style="text-align:center">
+        <div>
+            <h2>Buy for $5.00</h2>
+            <button type="button" class="button" id =custom-button>
+                <span id="cog" class="icon">
+                  <i class="fas fa fa-cog"></i>
+                  Pay with Card
+                </span>
+            </button>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<script>
+    var handler = StripeCheckout.configure({
+        key: "{{ key }}",
+        image: '../static/images/favicon.ico',
+        locale: "auto",
+        token: function (token) {
+            console.log(token);
+        }
+    });
+
+    document.getElementById("custom-button").addEventListener("click", function (e) {
+        // Open Checkout with further options:
+        handler.open({
+            name: "Learning",
+            description: "Purchase One Month Of Predictions",
+            amount: 500
+        });
+    });
+
+    // Close Checkout on page navigation:
+    window.addEventListener("popstate", function () {
+        handler.close();
+    });
+</script>
+{% endblock %}

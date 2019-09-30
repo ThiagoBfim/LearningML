@@ -36,3 +36,8 @@
 .Checkout.is-desktop .Modal {
   width: auto !important;
 }
+
+.navbar-item .logo  {
+  max-height: 40px;
+  width: 170px;
+}

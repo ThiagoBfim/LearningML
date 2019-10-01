@@ -15,6 +15,7 @@ from scripts import helpers
 from scripts import forms
 from scripts import tabledef
 from werkzeug import secure_filename
+from keras import backend as K
 
 app = Flask(__name__)
 app.secret_key = os.urandom(12)  # Generic key for dev purposes only
@@ -73,15 +74,14 @@ def upload_file():
       path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
       model = ResNet50(weights='imagenet')
       img = image.load_img(path, target_size=(224, 224))
-      print('teste: ', path)
       x = image.img_to_array(img)
       x = np.expand_dims(x, axis=0)
       x = preprocess_input(x)
       preds = model.predict(x)
       preds_decoded = decode_predictions(preds, top=3)[0]
       print(decode_predictions(preds, top=3)[0])
-      f.save(path)
-      return render_template('uploaded.html', title='Success', predictions=preds_decoded, user_image=f.filename)
+      K.clear_session()
+      return render_template('uploaded.html', title='Success',  predictions=preds_decoded, user_image=f.filename)
 
 
 # -------- Login ------------------------------------------------------------- #
@@ -150,29 +150,3 @@ def settings():
 # ======== Main ============================================================== #
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True)
-
-
-@app.route('/user/pay')
-def pay():
-    current_user = helpers.get_user();
-    if current_user.paid == 0:
-    	return render_template('user/buy.html', key=stripe_keys['publishable_key'], email=current_user.email)
-    return "You already paid."
-
-
-@app.route('/api/payFail', methods=['POST', 'GET'])
-def payFail():
-    content = request.json
-    current_user = helpers.get_user()
-    if current_user is not None:
-        helpers.change_user(paid=0)
-    return "Response: User with associated email " + str(current_user.email) + " updated on our end (payment failure)."
-
-@app.route('/api/paySuccess', methods=['POST', 'GET'])
-def paySuccess():
-    content = request.json
-    current_user = helpers.get_user()
-    if current_user is not None: 
-        helpers.change_user(paid=1)
-    return "Response: User with associated email " + str(current_user.email) + " updated on our end (paid)."
-

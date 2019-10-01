@@ -2,19 +2,30 @@
 {% block body %}
 {% include "navbar.html" %}
 <section class="hero is-primary is-bold is-large">
-    <div class="hero-body" style="text-align:center">
+    <div class="container">
 
-            <center> <h2><font color='white'>Thanks, you paid <strong>$10.00</strong>!</font></h2>
-                <h2><font color='white'>Upload your image below</font></h2>
-               <img src="https://www.popsci.com/sites/popsci.com/files/styles/1000_1x_/public/images/2018/08/untitled.png?itok=ualUMeJN&fc=50,50"></center>
-              
-                <form action = "/uploaded" method = "POST" 
-                       enctype = "multipart/form-data">
-                       <input type = "file" name = "file" />
-                       <input type = "submit"/>
-                    </form>
+        <div style="text-align: center; color:black; font-weight: bold; font-size: 25px">
+            <h1 style="font-size:32px;">Congratulations!!!</h1>
+            <h2>You have earn one month of predictions!</h2>
+            <h2>Upload your image below to have a predict.</h2>
+        </div>
+
+        <div class='upload-label' style="padding-top: 10px">
+            <label id='upload-label'>No file chosen</label>
+        </div>
+        <div>
+            <img id='image-picked' class='no-display' alt='Chosen Image' height='0'>
+        </div>
+
+        <form action="/uploaded" method="POST" enctype="multipart/form-data">
+            <input id='file-input' class='no-display' type='file' name='file' accept='image/*'
+                onchange='showPicked(this)'>
+            <input type="submit" />
+        </form>
+        <div style="padding-bottom: 50px"></div>
     </div>
 </section>
 {% endblock %}
 {% block scripts %}
+<script src="../static/js/upload.js"></script>
 {% endblock %}

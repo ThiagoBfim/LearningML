@@ -2,63 +2,27 @@
 {% block body %}
 {% include "navbar.html" %}
 <section class="hero is-primary is-bold is-large">
-    <div class="hero-body" style="text-align:center">
+    <div class="container">
+
+        <div style="text-align: center; color:white; padding: 5px">
+            <h2>You have to pay <strong>$10.00</strong> to have one month of predictions!</h2>
 
             <form action="/charge" method="post">
                 <article>
-                  <label>
-                  </label>
+                    <label>
+                    </label>
                 </article>
-            
-                <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-            
-                        data-key="pk_test_TQmy1LFbeJ6tgZLOdzT4pZRh00mJ3yq97c"
-                        data-description="Purchase One Month Of Predictions"
-                        data-amount="1000"
-                    data-email="{{ email }}"
-                        data-locale="auto"></script>
-              </form>
 
-        <div>
-            <form action="/charge" method="post">
-                <h2>Buy for $5.00</h2>
-                <button type="submit" class="button is-large" id="custom-button">
-                    <span class="icon is-medium">
-                        <i class="fas fa-credit-card"></i>
-                    </span>
-                    <span> Pay with Card</span>
-                </button>
+                <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                    data-key="pk_test_TQmy1LFbeJ6tgZLOdzT4pZRh00mJ3yq97c"
+                    data-description="Purchase One Month Of Predictions" data-name="Learning"
+                    data-image="../static/images/favicon.ico" data-amount="1000" data-email="{{ email }}"
+                    data-locale="auto"></script>
             </form>
         </div>
+        <img src="../static/images/predict.jpg">
     </div>
 </section>
 {% endblock %}
 {% block scripts %}
-<!--
-<script src="https://checkout.stripe.com/checkout.js"></script>
-<script>
-    var handler = StripeCheckout.configure({
-        key: "pk_test_zpCilIV7tmrKnzoC3T5Up4GN00yeXvULaC",
-        image: '../static/images/favicon.ico',
-        locale: "auto",
-        token: function (token) {
-            console.log(token);
-        }
-    });
-
-    document.getElementById("custom-button").addEventListener("click", function (e) {
-        // Open Checkout with further options:
-        handler.open({
-            name: "Learning",
-            description: "Purchase One Month Of Predictions",
-            amount: 500
-        });
-    });
-
-    // Close Checkout on page navigation:
-    window.addEventListener("popstate", function () {
-        handler.close();
-    });
-</script>
--->
 {% endblock %}

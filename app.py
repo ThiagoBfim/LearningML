@@ -3,6 +3,7 @@ import os
 os.environ['HDF5_DISABLE_VERSION_CHECK'] = '1'
 
 import numpy as np
+## https://stackoverflow.com/questions/58015489/flask-and-keras-model-error-thread-local-object-has-no-attribute-value
 from keras.applications.resnet50 import preprocess_input, decode_predictions
 from keras.preprocessing import image
 from keras.applications.resnet50 import ResNet50
@@ -13,10 +14,13 @@ from flask import Flask, redirect, url_for, render_template, request, session
 from scripts import helpers
 from scripts import forms
 from scripts import tabledef
+from werkzeug import secure_filename
 
 app = Flask(__name__)
 app.secret_key = os.urandom(12)  # Generic key for dev purposes only
 
+# Setup the app with the config.py file
+app.config.from_object('config')
 
 stripe_keys = {
 	'secret_key': "sk_test_0VRS9K4LFsin7xx1cO1cBSip00W1BDqFRG",
@@ -45,11 +49,9 @@ def charge():
     if session.get('logged_in'):
         # Amount in cents
         amount = 500
-        current_user = helpers.get_user();
-        print(request.form['stripeToken']);
-        print(current_user.email);
-        customer = stripe.Customer.create(
-            current_user.email, source=request.form['stripeToken'])
+        current_user = helpers.get_user()
+        customer = stripe.Customer.create(email=current_user.email, source=request.form['stripeToken'])
+        print('chargehtml.....')
         charge = stripe.Charge.create(
             customer=customer.id,
             amount=amount,
@@ -58,7 +60,8 @@ def charge():
         )
         helpers.change_user(paid=1)
         # do anything else, like execute shell command to enable user's service on your app
-        return render_template('user/charge.html', amount=amount)
+    
+        return render_template('charge.html', amount=amount)
     return redirect(url_for('login'))
 
 
@@ -66,9 +69,11 @@ def charge():
 def upload_file():
    if request.method == 'POST':
       f = request.files['file']
+      f.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(f.filename)))
       path = os.path.join(app.config['UPLOAD_FOLDER'], f.filename)
       model = ResNet50(weights='imagenet')
       img = image.load_img(path, target_size=(224, 224))
+      print('teste: ', path)
       x = image.img_to_array(img)
       x = np.expand_dims(x, axis=0)
       x = preprocess_input(x)

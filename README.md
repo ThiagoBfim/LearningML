@@ -6,4 +6,4 @@
 - ML Prediction with [Keras](https://keras.io/)
 
 ## Info
-Project for Siraj's course for learn ML with python.
+Project for Siraj course to learn ML with python.
